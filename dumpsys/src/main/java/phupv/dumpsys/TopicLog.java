@@ -80,7 +80,7 @@ final class TopicLog implements Dumpable {
                 time = sCalendar.get(Calendar.YEAR) + "-"
                         + (sCalendar.get(Calendar.MONTH) + 1) + "-"
                         + sCalendar.get(Calendar.DAY_OF_MONTH) + " "
-                        + sCalendar.get(Calendar.HOUR) + ":"
+                        + sCalendar.get(Calendar.HOUR_OF_DAY) + ":"
                         + sCalendar.get(Calendar.MINUTE) + ":"
                         + sCalendar.get(Calendar.SECOND) + "."
                         + sCalendar.get(Calendar.MILLISECOND);
