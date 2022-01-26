@@ -1,5 +1,6 @@
 package phupv.dumpsys;
 
+import android.os.Process;
 import android.text.TextUtils;
 
 import java.io.FileDescriptor;
@@ -21,7 +22,8 @@ final class TopicLog implements Dumpable {
     }
 
     public void addLog(String tag, String msg) {
-        mMessageQueue.enqueue(System.currentTimeMillis(), tag, msg);
+        mMessageQueue.enqueue(System.currentTimeMillis(), Process.myPid(),
+                Process.myTid(), tag, msg);
     }
 
     @Override
@@ -45,7 +47,7 @@ final class TopicLog implements Dumpable {
         private final Message[] queue = new Message[MAX_MESSAGE_QUEUE];
         private int latestIndex = -1;
 
-        public void enqueue(long time, String tag, String msg) {
+        public void enqueue(long time, int pid, int tid, String tag, String msg) {
             ++latestIndex;
             if (latestIndex >= MAX_MESSAGE_QUEUE) {
                 latestIndex = 0;
@@ -53,7 +55,7 @@ final class TopicLog implements Dumpable {
             if (queue[latestIndex] == null) {
                 queue[latestIndex] = new Message();
             }
-            queue[latestIndex].setBody(time, tag, msg);
+            queue[latestIndex].setBody(time, pid, tid, tag, msg);
         }
 
         public void print(PrintWriter pw) {
@@ -85,20 +87,24 @@ final class TopicLog implements Dumpable {
             } else {
                 time = String.valueOf(msg.time);
             }
-            pw.println(time + " " + msg.tag + ": " + msg.msg);
+            pw.println(time + " " + msg.pid + "-" + msg.tid + " " + msg.tag + ": " + msg.msg);
         }
     }
 
     private static class Message {
         private long time;
+        private int pid;
+        private int tid;
         private String tag;
         private String msg;
 
         private Message() {
         }
 
-        private void setBody(long time, String tag, String msg) {
+        private void setBody(long time, int pid, int tid, String tag, String msg) {
             this.time = time;
+            this.pid = pid;
+            this.tid = tid;
             this.tag = tag;
             this.msg = msg;
         }
