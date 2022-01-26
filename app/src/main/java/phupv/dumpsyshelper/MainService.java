@@ -45,7 +45,7 @@ public class MainService extends Service {
 
     @Override
     protected void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
-        Logger.dump(fd, writer, new String[]{"--topic", TOPIC, "--formatTime", "true"});
+        Logger.dump(fd, writer, new String[]{"--topic", TOPIC});
     }
 
     @Override

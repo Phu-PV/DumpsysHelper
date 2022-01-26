@@ -10,7 +10,7 @@ import java.util.TimeZone;
 
 final class TopicLog implements Dumpable {
     public static final String TOPIC_NONE = "TOPIC_NONE";
-    public static boolean sFormatTime = false;
+    static boolean sFormatTime = false;
     private static final Calendar sCalendar = Calendar.getInstance();
 
     public final String mTopic;

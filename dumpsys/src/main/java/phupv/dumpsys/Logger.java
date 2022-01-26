@@ -16,6 +16,10 @@ public class Logger {
         mAndroidLogEnabled = enable;
     }
 
+    public static void enableTimeFormat(boolean enable) {
+        TopicLog.sFormatTime = enable;
+    }
+
     public static void log(String tag, String msg) {
         log(TopicLog.TOPIC_NONE, tag, msg);
     }
