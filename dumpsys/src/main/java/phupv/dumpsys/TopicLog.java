@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 final class TopicLog implements Dumpable {
@@ -77,13 +78,14 @@ final class TopicLog implements Dumpable {
             String time;
             if (sFormatTime) {
                 sCalendar.setTimeInMillis(msg.time);
-                time = sCalendar.get(Calendar.YEAR) + "-"
-                        + (sCalendar.get(Calendar.MONTH) + 1) + "-"
-                        + sCalendar.get(Calendar.DAY_OF_MONTH) + " "
-                        + sCalendar.get(Calendar.HOUR_OF_DAY) + ":"
-                        + sCalendar.get(Calendar.MINUTE) + ":"
-                        + sCalendar.get(Calendar.SECOND) + "."
-                        + sCalendar.get(Calendar.MILLISECOND);
+                time = String.format(Locale.US, "%04d-%02d-%02d %02d:%02d:%02d.%03d",
+                        sCalendar.get(Calendar.YEAR),
+                        (sCalendar.get(Calendar.MONTH) + 1),
+                        sCalendar.get(Calendar.DAY_OF_MONTH),
+                        sCalendar.get(Calendar.HOUR_OF_DAY),
+                        sCalendar.get(Calendar.MINUTE),
+                        sCalendar.get(Calendar.SECOND),
+                        sCalendar.get(Calendar.MILLISECOND));
             } else {
                 time = String.valueOf(msg.time);
             }
