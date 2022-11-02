@@ -43,9 +43,10 @@ public class MainService extends Service {
         super.onRebind(intent);
     }
 
+    // adb shell dumpsys activity service phupv.dumpsyshelper --topic SERVICE
     @Override
     protected void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
-        Logger.dump(fd, writer, new String[]{"--topic", TOPIC});
+        Logger.dump(fd, writer, args);
     }
 
     @Override

@@ -14,11 +14,6 @@ import phupv.dumpsys.Logger;
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
 
-    static {
-        Logger.enableAndroidLog(true);
-        Logger.enableTimeFormat(true);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Logger.log(TAG, "activity onCreate");
@@ -63,6 +58,7 @@ public class MainActivity extends Activity {
         super.onPause();
     }
 
+    // adb shell dumpsys activity phupv.dumpsyshelper
     @Override
     public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         Logger.dump(fd, writer, args);
