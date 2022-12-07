@@ -23,8 +23,11 @@ final class TopicLog implements Dumpable {
     }
 
     public void addLog(String tag, String msg) {
-        mMessageQueue.enqueue(System.currentTimeMillis(), Process.myPid(),
-                Process.myTid(), tag, msg);
+        mMessageQueue.enqueue(System.currentTimeMillis(),
+                Process.myUid(),
+                Process.myPid(),
+                Process.myTid(),
+                tag, msg);
     }
 
     @Override
@@ -48,18 +51,20 @@ final class TopicLog implements Dumpable {
         private final Message[] queue = new Message[MAX_MESSAGE_QUEUE];
         private int latestIndex = -1;
 
-        public void enqueue(long time, int pid, int tid, String tag, String msg) {
-            ++latestIndex;
-            if (latestIndex >= MAX_MESSAGE_QUEUE) {
-                latestIndex = 0;
+        public void enqueue(long time, int uid, int pid, int tid, String tag, String msg) {
+            synchronized (this) {
+                ++latestIndex;
+                if (latestIndex >= MAX_MESSAGE_QUEUE) {
+                    latestIndex = 0;
+                }
+                if (queue[latestIndex] == null) {
+                    queue[latestIndex] = new Message();
+                }
+                queue[latestIndex].setBody(time, uid, pid, tid, tag, msg);
             }
-            if (queue[latestIndex] == null) {
-                queue[latestIndex] = new Message();
-            }
-            queue[latestIndex].setBody(time, pid, tid, tag, msg);
         }
 
-        public void print(PrintWriter pw) {
+        private void print(PrintWriter pw) {
             for (int i = latestIndex + 1; i < MAX_MESSAGE_QUEUE; ++i) {
                 if (queue[i] == null) {
                     break;
@@ -89,12 +94,14 @@ final class TopicLog implements Dumpable {
             } else {
                 time = String.valueOf(msg.time);
             }
-            pw.println(time + " " + msg.pid + "-" + msg.tid + " " + msg.tag + ": " + msg.msg);
+            pw.println(time + " " + msg.uid + " " + msg.pid + "-" + msg.tid
+                    + " " + msg.tag + ": " + msg.msg);
         }
     }
 
     private static class Message {
         private long time;
+        private int uid;
         private int pid;
         private int tid;
         private String tag;
@@ -103,8 +110,9 @@ final class TopicLog implements Dumpable {
         private Message() {
         }
 
-        private void setBody(long time, int pid, int tid, String tag, String msg) {
+        private void setBody(long time, int uid, int pid, int tid, String tag, String msg) {
             this.time = time;
+            this.uid = uid;
             this.pid = pid;
             this.tid = tid;
             this.tag = tag;
