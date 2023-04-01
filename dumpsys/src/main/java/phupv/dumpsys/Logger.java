@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class Logger {
-    private static boolean mAndroidLogEnabled = false;
+    private static boolean mAndroidLogEnabled = true;
     private static final HashMap<String, TopicLog> sTopicLogs = new HashMap<>();
 
     public static void enableAndroidLog(boolean enable) {
